@@ -112,16 +112,17 @@ public class FlappySub extends JFrame implements Runnable, KeyListener {
 		gravity = -6;
 		push = 0;
 		sub = new Base(425,630,1,animM);
-		Base top = new Base(0,0,0,animT);
-		Base bottom = new Base(0,0,0,animB);
 		
 		nMines = 3;
 		minesV = -3;
 		minesGap = 64;
+		mines = new LinkedList();
 		for (int i=0; i<nMines; i++) {
-			int x=0, y=0;
-			Mine m = new Mine(x, y, minesGap, top, bottom);
-			mines.add(m);
+			int x=1, y=10;
+			Base top = new Base(0,0,0,animT);
+			Base bottom = new Base(0,0,0,animB);
+			mines.add(new Mine(x, y, minesGap, top, bottom));
+			mines.get(i).setY(50);
 		}
 		
 		
@@ -348,15 +349,18 @@ public class FlappySub extends JFrame implements Runnable, KeyListener {
 				g.drawImage(sub.getImage(), sub.getX(), sub.getY(), this);
 				
 				
-				g.drawString(String.valueOf(score), 1070,670);
 //				g.drawString("Vidas: " + String.valueOf(hank.getLives()), 1000, 75);	// draw score at (1000,25)
 			} else if (estado == 1) {
 //				Dibuja el estado de pausa en el jframe
-				g.drawImage(pausa.getImage(),pausa.getX(),pausa.getY(),this);
+				
+//				g.drawImage(pausa.getImage(),pausa.getX(),pausa.getY(),this);
+				
 //				g.drawString("PAUSA", getWidth()/2 - 100, getHeight()/2);
 			} else if (estado == 2) {
 //				Dibuja el estado de informacion para el usuario en el jframe
-				g.drawImage(instruc.getImage(),instruc.getX(),instruc.getY(),this);
+
+//				g.drawImage(instruc.getImage(),instruc.getX(),instruc.getY(),this);
+				
 				/*g.drawString("INSTRUCCIONES", getWidth()/2 - 210, 200);
 				g.drawString("Para jugar debes mover a Hank con las", getWidth()/2 - 210, 250);
 				g.drawString("teclas ← y →. Presiona la barra espaciadora", getWidth()/2 - 210, 280);
@@ -367,7 +371,9 @@ public class FlappySub extends JFrame implements Runnable, KeyListener {
 				g.drawString("P - Pausa", getWidth()/2 - 210, 430);*/
 			} else if (estado == 3) {
 //				Dibuja el estado de creditos en el jframe
-				g.drawImage(gameo.getImage(),gameo.getX(),gameo.getY(),this);
+				
+//				g.drawImage(gameo.getImage(),gameo.getX(),gameo.getY(),this);
+				
 				/*g.setColor(new Color(78, 88, 93));
 				g.fillRect(100, 100, getWidth() - 200, getHeight() - 200);
 				g.setColor(Color.white);
