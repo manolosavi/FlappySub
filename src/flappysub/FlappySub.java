@@ -215,7 +215,8 @@ public class FlappySub extends JFrame implements Runnable, KeyListener {
 					changeLvl = false;
 				} else if (mine.getX() < -34) {
 					mine.setX(1250);
-					mine.setGap(128-level*8);
+					int g = 128-level*8;
+					mine.setGap((g>=64)?g:64);
 					minesV = -3-level;
 					int r = (int)(Math.random()*300)+150;
 					mine.setY(r);
@@ -231,12 +232,12 @@ public class FlappySub extends JFrame implements Runnable, KeyListener {
 			}
 		}
 		
-		if (!changeLvl && (score%5)==0) {
+		if (!changeLvl && (score%15)==0) {
 			level++;
 			changeLvl = true;
 		}
 		
-		if(cargar){
+		if (cargar) {
 			cargar = false;
 			try {
 			leeArchivo();
@@ -296,6 +297,9 @@ public class FlappySub extends JFrame implements Runnable, KeyListener {
 			push -= 10;
 		} else if (e.getKeyCode()== KeyEvent.VK_R) {
 			if (estado!=0) {
+				score = 0;
+				level = 0;
+				minesV = -3;
 				sub.setX(563);
 				sub.setY(400);
 				sub.setLives(1);
@@ -303,6 +307,7 @@ public class FlappySub extends JFrame implements Runnable, KeyListener {
 				for (int i=0; i<nMines; i++) {
 					mines.get(i).setY(r);
 					mines.get(i).setX(1250+i*300);
+					mines.get(i).setGap(128);
 				}
 				estado = 0;
 			}
