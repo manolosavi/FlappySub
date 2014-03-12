@@ -49,6 +49,9 @@ public class FlappySub extends JFrame implements Runnable, KeyListener {
 	private long tiempoActual;			// el tiempo actual que esta corriendo el jar
 	private long tiempoInicial;			// el tiempo inicial
 	private boolean sound;				// si el sonido esta activado
+	private int score;					// el puntaje
+	private int level;
+	private boolean changeLvl;
 	
 //	checar si se necesitan
 	private Base pausa;					// Objeto que pinta el pausa
@@ -57,7 +60,6 @@ public class FlappySub extends JFrame implements Runnable, KeyListener {
 	private Base gamew;					// Objeto que pinta el Game over win
 	private int highestscore;           // El puntuaje mas alto
 	private int estado;					// el estado actual del juego (0 = corriendo, 1 = pausa, 2 = informacion,3 = creditos)
-	private int score;					// el puntaje
 	private boolean cargar;				// variable que carga el archivo
 
 	
@@ -72,6 +74,8 @@ public class FlappySub extends JFrame implements Runnable, KeyListener {
 		setSize(1200,720);
 		
 		score = 0;
+		level = 0;
+		changeLvl = true;
 		estado = 2;
 		
 		sound = false;
@@ -91,8 +95,8 @@ public class FlappySub extends JFrame implements Runnable, KeyListener {
 		
 		Image iT = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("resources/mineT.png"));
 		Image iB = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("resources/mineB.png"));
-                
-                Image instru= Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("resources/instrucciones.png"));
+		
+		Image instru= Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("resources/instrucciones.png"));
 
 //		Image pausa1 = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("resources/pausa.png"));
 //		Image instruc1 = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("resources/instrucciones.png"));
@@ -204,11 +208,17 @@ public class FlappySub extends JFrame implements Runnable, KeyListener {
 			sub.actualiza(tiempoActual);
 			
 			for (int i=0; i<nMines; i++) {
-				mines.get(i).addX(minesV);
-				if (mines.get(i).getX() < -34) {
-					mines.get(i).setX(1250);
+				Mine mine = mines.get(i);
+				mine.addX(minesV);
+				if (mine.getX() == 558 || mine.getX() == 559 || mine.getX() == 560) {
+					score++;
+					changeLvl = false;
+				} else if (mine.getX() < -34) {
+					mine.setX(1250);
+					mine.setGap(128-level*8);
+					minesV = -3-level;
 					int r = (int)(Math.random()*300)+150;
-					mines.get(i).setY(r);
+					mine.setY(r);
 				}
 			}
 		}
@@ -219,6 +229,11 @@ public class FlappySub extends JFrame implements Runnable, KeyListener {
 			} catch(IOException e) {
 				System.out.println("Error en guardar");
 			}
+		}
+		
+		if (!changeLvl && (score%5)==0) {
+			level++;
+			changeLvl = true;
 		}
 		
 		if(cargar){
