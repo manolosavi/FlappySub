@@ -38,7 +38,7 @@ public class FlappySub extends JFrame implements Runnable, KeyListener {
 	private Image dbImage;				// Imagen a proyectar
 	private Image background;			// Imagen de fondo
 	private Graphics dbg;				// Objeto grafico
-	private Base sub;					// Objeto submarine
+	private Base sub;					// Objeto sub
 	private int gravity;
 	private int push;
 	private LinkedList<Mine> mines;		// Objeto minas
@@ -72,7 +72,7 @@ public class FlappySub extends JFrame implements Runnable, KeyListener {
 		setSize(1200,720);
 		
 		score = 0;
-		estado = 2;
+		estado = 0;
 		
 		sound = false;
         cargar = false;
@@ -80,7 +80,7 @@ public class FlappySub extends JFrame implements Runnable, KeyListener {
 		choque = new SoundClip("resources/dano1.wav");	// choque con minas
 		choque.setLooping(false);
 		
-		background = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("resources/BackGroundBB.jpg"));
+//		background = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("resources/BackGroundBB.jpg"));
 		
 //		Se cargan las imágenes para la animación
 		Image sub0 = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("resources/submarine0.png"));
@@ -98,31 +98,33 @@ public class FlappySub extends JFrame implements Runnable, KeyListener {
 //		Image gameo2 = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("resources/gameover2.png"));
                 
 //		Se crea la animación
-		Animacion animM = new Animacion(), animT = new Animacion(), animB = new Animacion();
+		Animacion animS = new Animacion(), animT = new Animacion(), animB = new Animacion();
 		int subTime = 100, mineTime = 0;
-		animM.sumaCuadro(sub0, subTime);
-		animM.sumaCuadro(sub1, subTime);
-		animM.sumaCuadro(sub2, subTime);
-		animM.sumaCuadro(sub3, subTime);
-		animM.sumaCuadro(sub4, subTime);
+		animS.sumaCuadro(sub0, subTime);
+		animS.sumaCuadro(sub1, subTime);
+		animS.sumaCuadro(sub2, subTime);
+		animS.sumaCuadro(sub3, subTime);
+		animS.sumaCuadro(sub4, subTime);
 		
 		animT.sumaCuadro(iT, mineTime);
 		animB.sumaCuadro(iB, mineTime);
         
-		gravity = -6;
+		gravity = 6;
 		push = 0;
-		sub = new Base(425,630,1,animM);
+		sub = new Base(563,630,1,animS);
 		
-		nMines = 3;
+		nMines = 4;
 		minesV = -3;
-		minesGap = 64;
+		minesGap = 98;
 		mines = new LinkedList();
+		int r = (int)(Math.random()*300)+150;
 		for (int i=0; i<nMines; i++) {
 			int x=1, y=10;
 			Base top = new Base(0,0,0,animT);
 			Base bottom = new Base(0,0,0,animB);
 			mines.add(new Mine(x, y, minesGap, top, bottom));
-			mines.get(i).setY(50);
+			mines.get(i).setY(r);
+			mines.get(i).setX(300+i*300);
 		}
 		
 		
@@ -160,6 +162,7 @@ public class FlappySub extends JFrame implements Runnable, KeyListener {
      * 
      */
 	@Override
+	@SuppressWarnings("SleepWhileInLoop")
 	public void run () {
 		while (true) {
 			actualiza();
@@ -181,7 +184,6 @@ public class FlappySub extends JFrame implements Runnable, KeyListener {
 	 * 
 	 */
 	public void actualiza() {
-                
 		if (estado == 0) {
 //			Determina el tiempo que ha transcurrido desde que el Applet inicio su ejecución
 			long tiempoTranscurrido = System.currentTimeMillis() - tiempoActual;
@@ -191,15 +193,21 @@ public class FlappySub extends JFrame implements Runnable, KeyListener {
 
 //			Actualiza la posicion y la animación en base al tiempo transcurrido
 			int y = gravity+push;
-			if (y<0 || y>668) {
-				sub.addLives(-1);
+			if (push<0) {
+				push++;
 			}
-			sub.setY(y);
+			if (y<0 || y>668) {
+//				sub.addLives(-1);
+			}
+			sub.addY(y);
+			sub.actualiza(tiempoActual);
 			
 			for (int i=0; i<nMines; i++) {
 				mines.get(i).addX(minesV);
 				if (mines.get(i).getX() < -34) {
 					mines.get(i).setX(1250);
+					int r = (int)(Math.random()*300)+150;
+					mines.get(i).setY(r);
 				}
 			}
 		}
@@ -245,7 +253,7 @@ public class FlappySub extends JFrame implements Runnable, KeyListener {
 	 */
 	@Override
 	public void keyPressed(KeyEvent e) {
-		if (e.getKeyCode() == KeyEvent.VK_S) {		//Presiono tecla s / para quitar sonido
+		if (e.getKeyCode() == KeyEvent.VK_S) {			//Presiono tecla s para quitar sonido
 			sound = !sound;
 		} else if (e.getKeyCode() == KeyEvent.VK_I) {
 //			Mostrar/Quitar las instrucciones del juego
@@ -262,7 +270,7 @@ public class FlappySub extends JFrame implements Runnable, KeyListener {
 				estado = 1;
 			}
 		} else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-			push += 9;
+			push -= 9;
 		}
     }
 	@Override
@@ -344,19 +352,19 @@ public class FlappySub extends JFrame implements Runnable, KeyListener {
 				g.drawImage(m.getBottom().getImage(), m.getX(), m.getBottom().getY(), this);
 			}
 			
-			if(estado == 0) {
+//			if(estado == 0) {
 //			Dibuja el estado corriendo del juego
 				g.drawImage(sub.getImage(), sub.getX(), sub.getY(), this);
 				
 				
 //				g.drawString("Vidas: " + String.valueOf(hank.getLives()), 1000, 75);	// draw score at (1000,25)
-			} else if (estado == 1) {
+//			} else if (estado == 1) {
 //				Dibuja el estado de pausa en el jframe
 				
 //				g.drawImage(pausa.getImage(),pausa.getX(),pausa.getY(),this);
 				
 //				g.drawString("PAUSA", getWidth()/2 - 100, getHeight()/2);
-			} else if (estado == 2) {
+//			} else if (estado == 2) {
 //				Dibuja el estado de informacion para el usuario en el jframe
 
 //				g.drawImage(instruc.getImage(),instruc.getX(),instruc.getY(),this);
@@ -369,7 +377,7 @@ public class FlappySub extends JFrame implements Runnable, KeyListener {
 				g.drawString("I - Instrucciones", getWidth()/2 - 210, 370);
 				g.drawString("S - Sonido", getWidth()/2 - 210, 400);
 				g.drawString("P - Pausa", getWidth()/2 - 210, 430);*/
-			} else if (estado == 3) {
+//			} else if (estado == 3) {
 //				Dibuja el estado de creditos en el jframe
 				
 //				g.drawImage(gameo.getImage(),gameo.getX(),gameo.getY(),this);
@@ -382,7 +390,7 @@ public class FlappySub extends JFrame implements Runnable, KeyListener {
 				g.drawString("Andres Rodriguez    A00812121", getWidth()/2 - 210, 300);
 				g.drawString("Alejandro Sanchez   A01191434", getWidth()/2 - 210, 350);
 				g.drawString("Manuel Sañudo       A01192241", getWidth()/2 - 210, 400);*/
-			}
+//			}
 
 		} else {
 //			Da un mensaje mientras se carga el dibujo	
