@@ -72,7 +72,7 @@ public class FlappySub extends JFrame implements Runnable, KeyListener {
 		setSize(1200,720);
 		
 		score = 0;
-		estado = 0;
+		estado = 2;
 		
 		sound = false;
                 cargar = false;
@@ -91,6 +91,8 @@ public class FlappySub extends JFrame implements Runnable, KeyListener {
 		
 		Image iT = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("resources/mineT.png"));
 		Image iB = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("resources/mineB.png"));
+                
+                Image instru= Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("resources/instrucciones.png"));
 
 //		Image pausa1 = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("resources/pausa.png"));
 //		Image instruc1 = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("resources/instrucciones.png"));
@@ -99,6 +101,7 @@ public class FlappySub extends JFrame implements Runnable, KeyListener {
                 
 //		Se crea la animación
 		Animacion animS = new Animacion(), animT = new Animacion(), animB = new Animacion();
+                Animacion animI = new Animacion(); 
 		int subTime = 100, mineTime = 0;
 		animS.sumaCuadro(sub0, subTime);
 		animS.sumaCuadro(sub1, subTime);
@@ -108,11 +111,13 @@ public class FlappySub extends JFrame implements Runnable, KeyListener {
 		
 		animT.sumaCuadro(iT, mineTime);
 		animB.sumaCuadro(iB, mineTime);
+                
+                animI.sumaCuadro(instru,0);
         
 		gravity = 3;
 		push = 0;
 		sub = new Base(10,400,1,animS);
-		
+		instruc = new Base(0,20,0,animI);
 		nMines = 4;
 		minesV = -3;
 		minesGap = 98;
@@ -378,10 +383,10 @@ public class FlappySub extends JFrame implements Runnable, KeyListener {
 //				g.drawImage(pausa.getImage(),pausa.getX(),pausa.getY(),this);
 				
 //				g.drawString("PAUSA", getWidth()/2 - 100, getHeight()/2);
-//			} else if (estado == 2) {
+			} else if (estado == 2) {
 //				Dibuja el estado de informacion para el usuario en el jframe
 
-//				g.drawImage(instruc.getImage(),instruc.getX(),instruc.getY(),this);
+				g.drawImage(instruc.getImage(),instruc.getX(),instruc.getY(),this);
 				
 				/*g.drawString("INSTRUCCIONES", getWidth()/2 - 210, 200);
 				g.drawString("Para jugar debes mover a Hank con las", getWidth()/2 - 210, 250);
@@ -391,7 +396,8 @@ public class FlappySub extends JFrame implements Runnable, KeyListener {
 				g.drawString("I - Instrucciones", getWidth()/2 - 210, 370);
 				g.drawString("S - Sonido", getWidth()/2 - 210, 400);
 				g.drawString("P - Pausa", getWidth()/2 - 210, 430);*/
-//			} else if (estado == 3) {
+                        } 
+//                                else if (estado == 3) {
 //				Dibuja el estado de creditos en el jframe
 				
 //				g.drawImage(gameo.getImage(),gameo.getX(),gameo.getY(),this);
@@ -405,12 +411,13 @@ public class FlappySub extends JFrame implements Runnable, KeyListener {
 				g.drawString("Alejandro Sanchez   A01191434", getWidth()/2 - 210, 350);
 				g.drawString("Manuel Sañudo       A01192241", getWidth()/2 - 210, 400);*/
 //			}
-
-		} else {
+                else {
 //			Da un mensaje mientras se carga el dibujo	
 			g.drawString("No se cargo la imagen..", 20, 20);
 		}
-	}
+        }       
+		 
+	
 	/**
 	 * @param args the command line arguments
 	 */
