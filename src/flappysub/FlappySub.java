@@ -17,6 +17,8 @@ import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -33,7 +35,7 @@ import javax.swing.JFrame;
  *
  * @author manolo
  */
-public class FlappySub extends JFrame implements Runnable, KeyListener {
+public class FlappySub extends JFrame implements Runnable, KeyListener, MouseListener {
 	private static final long serialVersionUID = 1L;
 //	Se declaran las variables.
 	private Image dbImage;				// Imagen a proyectar
@@ -47,6 +49,7 @@ public class FlappySub extends JFrame implements Runnable, KeyListener {
 	private int minesV;
 	private int minesGap;				// Separacion entre minas arriba/abajo
 	private SoundClip choque;			// Sonido de choque con minas
+	private SoundClip sonar;			// Sonido de sonar
 	private long tiempoActual;			// el tiempo actual que esta corriendo el jar
 	private long tiempoInicial;			// el tiempo inicial
 	private boolean sound;				// si el sonido esta activado
@@ -78,20 +81,19 @@ public class FlappySub extends JFrame implements Runnable, KeyListener {
 		changeLvl = true;
 		estado = 2;
 		
-		sound = false;
+		sound = true;
 		cargar = false;
 		
-		choque = new SoundClip("resources/dano1.wav");	// choque con minas
+		choque = new SoundClip("resources/explosion.wav");	// choque con minas
 		choque.setLooping(false);
+		sonar = new SoundClip("resources/sonar.wav");
+		sonar.setLooping(false);
 		
 		background = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("resources/background.jpg"));
 		
 //		Se cargan las imágenes para la animación
-		Image sub0 = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("resources/submarine0.png"));
-		Image sub1 = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("resources/submarine1.png"));
-		Image sub2 = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("resources/submarine2.png"));
-		Image sub3 = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("resources/submarine3.png"));
-		Image sub4 = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("resources/submarine4.png"));
+		Image sub0 = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("resources/sub0.png"));
+		Image sub1 = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("resources/sub1.png"));
 		
 		Image iT = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("resources/mineT.png"));
 		Image iB = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("resources/mineB.png"));
@@ -105,37 +107,31 @@ public class FlappySub extends JFrame implements Runnable, KeyListener {
 //		Se crea la animación
 		Animacion animS = new Animacion(), animT = new Animacion(), animB = new Animacion();
 		Animacion animI = new Animacion(), animGo = new Animacion(), animP=new Animacion(); 
-		int subTime = 100, mineTime = 0;
+		int subTime = 200, mineTime = 0;
 		animS.sumaCuadro(sub0, subTime);
 		animS.sumaCuadro(sub1, subTime);
-		animS.sumaCuadro(sub2, subTime);
-		animS.sumaCuadro(sub3, subTime);
-		animS.sumaCuadro(sub4, subTime);
 		
 		animT.sumaCuadro(iT, mineTime);
 		animB.sumaCuadro(iB, mineTime);
 		
 		animI.sumaCuadro(instru,0);
-                
-                animGo.sumaCuadro(gameo1,0);
-                
-                animP.sumaCuadro(pausa1,0);
+		animGo.sumaCuadro(gameo1,0);
+		animP.sumaCuadro(pausa1,0);
 		
-		gravity = 4;
+		gravity = 5;
 		push = 0;
 		sub = new Base(563,400,1,animS);
-                gameo = new Base(0,20,0,animGo);
-                pausa = new Base(0,20,0,animP);
+		gameo = new Base(0,20,0,animGo);
+		pausa = new Base(0,20,0,animP);
 		nMines = 4;
 		minesV = -3;
 		minesGap = 128;
-    
 		mines = new LinkedList();
 		for (int i=0; i<nMines; i++) {
 			Base top = new Base(0,0,0,animT);
 			Base bottom = new Base(0,0,0,animB);
 			mines.add(new Mine(0, 0, minesGap, top, bottom));
-			int r = (int)(Math.random()*300)+150;
+			int r = (int)(Math.random()*100)+350;
 			mines.get(i).setY(r);
 			mines.get(i).setX(1250+i*300);
 		}
@@ -143,13 +139,11 @@ public class FlappySub extends JFrame implements Runnable, KeyListener {
 		
 		instruc = new Base(0,20,0,animI);
 		
-//		gameo = new Base(0,20,0,animG);
-//		gamew = new Base(0,20,0,animG2);
-//		pausa = new Base(0,20,0,animP);
         
 		setResizable(false);
 		setBackground(new Color(43, 48, 51));
 		addKeyListener(this);
+		addMouseListener(this);
 	}
 	
 	/** 
@@ -218,17 +212,18 @@ public class FlappySub extends JFrame implements Runnable, KeyListener {
 				if (mine.getX() == 558 || mine.getX() == 559 || mine.getX() == 560) {
 					score++;
 					changeLvl = false;
+					if (sound) {
+						sonar.play();
+					}
 				} else if (mine.getX() < -34) {
 					mine.setX(1250);
-					int g = 128-level*4;
-					mine.setGap((g>=80)?g:80);
-					minesV = -3-(level/2);
-					int r = (int)(Math.random()*300)+150;
+					minesV = -3-((level+1)/2);
+					int r = (int)(Math.random()*(100+50*level))+350-50*level;
 					mine.setY(r);
 				}
 			}
 		}
-		if (sub.getLives() == 0) {
+		if (sub.getLives() <= 0) {
 			estado = 3;
                         Scanner scanner= new Scanner(System.in);
                         System.out.print("Pon tu nombre");
@@ -240,7 +235,7 @@ public class FlappySub extends JFrame implements Runnable, KeyListener {
 			}
 		}
 		
-		if (!changeLvl && (score%15)==0) {
+		if (!changeLvl && (score%10)==0) {
 			level++;
 			changeLvl = true;
 		}
@@ -331,26 +326,27 @@ public class FlappySub extends JFrame implements Runnable, KeyListener {
 	@Override
 	public void keyTyped(KeyEvent e){}
 	
-	/*public void leeArchivo() throws IOException {
-//		Lectura del archivo el cual tiene las variables del juego guardado
-		BufferedReader fileIn;
-		try {
-			fileIn = new BufferedReader(new FileReader("Guardado.txt"));
-		} catch (FileNotFoundException e){
-			File puntos = new File("Guardado.txt");
-			PrintWriter fileOut = new PrintWriter(puntos);
-			fileOut.println("100,demo");
-			fileOut.close();
-			fileIn = new BufferedReader(new FileReader("Guardado.txt"));
+	/**
+	 * Metodo <I>mousePressed</I> sobrescrito de la interface <code>MouseListener</code>.<P>
+	 * En este metodo maneja el evento que se genera al empezar un click.
+	 * @param e es el <code>evento</code> que se genera al empezar un click.
+	 */
+	@Override
+	public void mousePressed(MouseEvent e) {
+//		Para a link si se le da click/vuelve a moverse
+		if (estado == 0) {
+			push -= 10;
 		}
-		String dato = fileIn.readLine();
-                
-		dato = fileIn.readLine();
-		score = Integer.parseInt(dato);
-		
-
-		fileIn.close();
-	}*/
+	}
+	@Override
+	public void mouseClicked(MouseEvent e) {}
+	@Override
+	public void mouseReleased(MouseEvent e){}
+	@Override
+	public void mouseEntered(MouseEvent e) {}
+	@Override
+	public void mouseExited(MouseEvent e) {}
+	
 	
 	public void grabaArchivo() throws IOException {
 //		Grabar las variables necesarias para reiniciar el juego de donde se quedo el usuario en un txt llamado Guardado
@@ -401,21 +397,21 @@ public class FlappySub extends JFrame implements Runnable, KeyListener {
 			}
 			
 			if (estado == 0) {
-//			Dibuja el estado corriendo del juego
+//				Dibuja el estado corriendo del juego
 				g.drawImage(sub.getImage(), sub.getX(), sub.getY(), this);
-                                g.drawString("Score: " + score,1000, 75);	// draw score at (1000,25)
+				g.drawString("Score: " + score,1000, 75);	// draw score at (1000,25)
 				
 //				g.drawString("Vidas: " + String.valueOf(hank.getLives()), 1000, 75);	// draw score at (1000,25)
 			} else if (estado == 1) {
-//			Dibuja el estado de pausa en el jframe
+//				Dibuja el estado de pausa en el jframe
 				 g.drawImage(pausa.getImage(),pausa.getX(),pausa.getY(),this);
 			} else if (estado == 2) {
 //				Dibuja el estado de informacion para el usuario en el jframe
 				g.drawImage(instruc.getImage(),instruc.getX(),instruc.getY(),this);
-			}else if (estado ==3 ){
-    //                          Dibuja el estado de game over para el usuario en el jframe
-                                g.drawImage(gameo.getImage(),gameo.getX(),gameo.getY(),this);
-                        }
+			} else if (estado ==3 ){
+//				Dibuja el estado de game over para el usuario en el jframe
+				g.drawImage(gameo.getImage(),gameo.getX(),gameo.getY(),this);
+			}
 		} else {
 //			Da un mensaje mientras se carga el dibujo	
 			g.drawString("No se cargo la imagen..", 20, 20);
