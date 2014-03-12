@@ -98,14 +98,13 @@ public class FlappySub extends JFrame implements Runnable, KeyListener {
 		
 		Image instru= Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("resources/instrucciones.png"));
 
-//		Image pausa1 = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("resources/pausa.png"));
-//		Image instruc1 = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("resources/instrucciones.png"));
-//		Image gameo1 = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("resources/gameover.png"));
+		Image pausa1 = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("resources/pause.jpg"));
+		Image gameo1 = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("resources/gameover.jpg"));
 //		Image gameo2 = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("resources/gameover2.png"));
                 
 //		Se crea la animación
 		Animacion animS = new Animacion(), animT = new Animacion(), animB = new Animacion();
-		Animacion animI = new Animacion(); 
+		Animacion animI = new Animacion(), animGo = new Animacion(), animP=new Animacion(); 
 		int subTime = 100, mineTime = 0;
 		animS.sumaCuadro(sub0, subTime);
 		animS.sumaCuadro(sub1, subTime);
@@ -117,14 +116,20 @@ public class FlappySub extends JFrame implements Runnable, KeyListener {
 		animB.sumaCuadro(iB, mineTime);
 		
 		animI.sumaCuadro(instru,0);
-        
+                
+                animGo.sumaCuadro(gameo1,0);
+                
+                animP.sumaCuadro(pausa1,0);
 		
 		gravity = 4;
 		push = 0;
 		sub = new Base(563,400,1,animS);
+                gameo = new Base(0,20,0,animGo);
+                pausa = new Base(0,20,0,animP);
 		nMines = 4;
 		minesV = -3;
 		minesGap = 128;
+    
 		mines = new LinkedList();
 		for (int i=0; i<nMines; i++) {
 			Base top = new Base(0,0,0,animT);
@@ -403,16 +408,16 @@ public class FlappySub extends JFrame implements Runnable, KeyListener {
                                 g.drawString("Score: " + score,1000, 75);	// draw score at (1000,25)
 				
 //				g.drawString("Vidas: " + String.valueOf(hank.getLives()), 1000, 75);	// draw score at (1000,25)
-//			} else if (estado == 1) {
-//				Dibuja el estado de pausa en el jframe
-				
-//				g.drawImage(pausa.getImage(),pausa.getX(),pausa.getY(),this);
-				
-//				g.drawString("PAUSA", getWidth()/2 - 100, getHeight()/2);
+			} else if (estado == 1) {
+//			Dibuja el estado de pausa en el jframe
+				 g.drawImage(pausa.getImage(),pausa.getX(),pausa.getY(),this);
 			} else if (estado == 2) {
 //				Dibuja el estado de informacion para el usuario en el jframe
 				g.drawImage(instruc.getImage(),instruc.getX(),instruc.getY(),this);
-			}
+			}else if (estado ==3 ){
+    //                          Dibuja el estado de game over para el usuario en el jframe
+                                g.drawImage(gameo.getImage(),gameo.getX(),gameo.getY(),this);
+                        }
 		} else {
 //			Da un mensaje mientras se carga el dibujo	
 			g.drawString("No se cargo la imagen..", 20, 20);
