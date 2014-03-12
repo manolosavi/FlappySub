@@ -84,7 +84,7 @@ public class FlappySub extends JFrame implements Runnable, KeyListener {
 		choque = new SoundClip("resources/dano1.wav");	// choque con minas
 		choque.setLooping(false);
 		
-//		background = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("resources/BackGroundBB.jpg"));
+		background = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("resources/background.jpg"));
 		
 //		Se cargan las imágenes para la animación
 		Image sub0 = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("resources/submarine0.png"));
