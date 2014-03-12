@@ -25,6 +25,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.LinkedList;
+import java.util.Scanner;
 import javax.swing.JFrame;
 
 
@@ -52,7 +53,6 @@ public class FlappySub extends JFrame implements Runnable, KeyListener {
 	private int score;					// el puntaje
 	private int level;
 	private boolean changeLvl;
-	
 //	checar si se necesitan
 	private Base pausa;					// Objeto que pinta el pausa
 	private Base instruc;				// Objeto que pinta las instrucciones
@@ -61,7 +61,7 @@ public class FlappySub extends JFrame implements Runnable, KeyListener {
 	private int highestscore;           // El puntuaje mas alto
 	private int estado;					// el estado actual del juego (0 = corriendo, 1 = pausa, 2 = informacion,3 = creditos)
 	private boolean cargar;				// variable que carga el archivo
-
+        private String nombre;                         //guarda el nombre y el score
 	
 	public FlappySub() {
 		init();
@@ -230,6 +230,9 @@ public class FlappySub extends JFrame implements Runnable, KeyListener {
 		}
 		if (sub.getLives() == 0) {
 			estado = 3;
+                        Scanner scanner= new Scanner(System.in);
+                        System.out.print("Pon tu nombre");
+                        String nombre = scanner.nextLine();
 			try {
 				grabaArchivo();
 			} catch(IOException e) {
@@ -242,14 +245,14 @@ public class FlappySub extends JFrame implements Runnable, KeyListener {
 			changeLvl = true;
 		}
 		
-		if (cargar) {
+	/*	if (cargar) {
 			cargar = false;
 			try {
 			leeArchivo();
 			} catch(IOException e) {
 				System.out.println("Error en cargar");
 			}
-		}
+		}*/
 	}
 	
 	/**
@@ -299,7 +302,7 @@ public class FlappySub extends JFrame implements Runnable, KeyListener {
 				estado = 1;
 			}
 		} else if (e.getKeyCode() == KeyEvent.VK_SPACE || e.getKeyCode() == KeyEvent.VK_UP) {
-			push -= 10;
+			push -= 10;                       
 		} else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
 			push += 10;
 		} else if (e.getKeyCode()== KeyEvent.VK_R) {
@@ -328,7 +331,7 @@ public class FlappySub extends JFrame implements Runnable, KeyListener {
 	@Override
 	public void keyTyped(KeyEvent e){}
 	
-	public void leeArchivo() throws IOException {
+	/*public void leeArchivo() throws IOException {
 //		Lectura del archivo el cual tiene las variables del juego guardado
 		BufferedReader fileIn;
 		try {
@@ -341,25 +344,20 @@ public class FlappySub extends JFrame implements Runnable, KeyListener {
 			fileIn = new BufferedReader(new FileReader("Guardado.txt"));
 		}
 		String dato = fileIn.readLine();
-		tiempoActual = (Long.parseLong(dato));
+                
 		dato = fileIn.readLine();
-		estado = Integer.parseInt(dato);
-		dato = fileIn.readLine();
-		highestscore = Integer.parseInt(dato);
+		score = Integer.parseInt(dato);
+		
 
 		fileIn.close();
-	}
+	}*/
 	
 	public void grabaArchivo() throws IOException {
 //		Grabar las variables necesarias para reiniciar el juego de donde se quedo el usuario en un txt llamado Guardado
 		PrintWriter fileOut = new PrintWriter(new FileWriter("Guardado"));
-		fileOut.println(String.valueOf(tiempoActual));
-		fileOut.println(String.valueOf(estado));
-		if (score >= highestscore) {
-			fileOut.println(String.valueOf(score));    
-		} else {
-			fileOut.println(String.valueOf(highestscore));
-		}
+		fileOut.println(String.valueOf(nombre));
+                fileOut.println(String.valueOf(score));
+		
 		
 		fileOut.close();
 	}
@@ -423,7 +421,7 @@ public class FlappySub extends JFrame implements Runnable, KeyListener {
 			g.drawString("No se cargo la imagen..", 20, 20);
 		}
 	}       
-		 
+        
 	
 	/**
 	 * @param args the command line arguments
