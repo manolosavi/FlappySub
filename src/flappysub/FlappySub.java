@@ -75,7 +75,7 @@ public class FlappySub extends JFrame implements Runnable, KeyListener {
 		estado = 0;
 		
 		sound = false;
-        cargar = false;
+                cargar = false;
 		
 		choque = new SoundClip("resources/dano1.wav");	// choque con minas
 		choque.setLooping(false);
@@ -109,9 +109,9 @@ public class FlappySub extends JFrame implements Runnable, KeyListener {
 		animT.sumaCuadro(iT, mineTime);
 		animB.sumaCuadro(iB, mineTime);
         
-		gravity = 6;
+		gravity = 3;
 		push = 0;
-		sub = new Base(563,630,1,animS);
+		sub = new Base(10,400,1,animS);
 		
 		nMines = 4;
 		minesV = -3;
@@ -270,8 +270,22 @@ public class FlappySub extends JFrame implements Runnable, KeyListener {
 				estado = 1;
 			}
 		} else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-			push -= 9;
-		}
+			push -= 10;
+		} else if (e.getKeyCode()== KeyEvent.VK_R){
+                    sub.setX(10);
+                    sub.setY(400);
+                    if(sub.getLives()==0){
+                        sub.setLives(1);
+                    }
+                    int r = (int)(Math.random()*300)+150;
+                    for (int i=0; i<nMines; i++) {
+			int x=1, y=10;
+			mines.get(i).setY(r);
+			mines.get(i).setX(300+i*300);
+                    }
+                    estado =0;
+                }
+                
     }
 	@Override
 	public void keyReleased(KeyEvent e){}
