@@ -75,7 +75,7 @@ public class FlappySub extends JFrame implements Runnable, KeyListener {
 		estado = 2;
 		
 		sound = false;
-                cargar = false;
+		cargar = false;
 		
 		choque = new SoundClip("resources/dano1.wav");	// choque con minas
 		choque.setLooping(false);
@@ -101,7 +101,7 @@ public class FlappySub extends JFrame implements Runnable, KeyListener {
                 
 //		Se crea la animación
 		Animacion animS = new Animacion(), animT = new Animacion(), animB = new Animacion();
-                Animacion animI = new Animacion(); 
+		Animacion animI = new Animacion(); 
 		int subTime = 100, mineTime = 0;
 		animS.sumaCuadro(sub0, subTime);
 		animS.sumaCuadro(sub1, subTime);
@@ -111,30 +111,29 @@ public class FlappySub extends JFrame implements Runnable, KeyListener {
 		
 		animT.sumaCuadro(iT, mineTime);
 		animB.sumaCuadro(iB, mineTime);
-                
-                animI.sumaCuadro(instru,0);
+		
+		animI.sumaCuadro(instru,0);
         
-		gravity = 3;
+		
+		gravity = 4;
 		push = 0;
-		sub = new Base(10,400,1,animS);
-		instruc = new Base(0,20,0,animI);
+		sub = new Base(563,400,1,animS);
 		nMines = 4;
 		minesV = -3;
-		minesGap = 98;
+		minesGap = 128;
 		mines = new LinkedList();
 		for (int i=0; i<nMines; i++) {
-			int x=1, y=10;
 			Base top = new Base(0,0,0,animT);
 			Base bottom = new Base(0,0,0,animB);
-			mines.add(new Mine(x, y, minesGap, top, bottom));
+			mines.add(new Mine(0, 0, minesGap, top, bottom));
 			int r = (int)(Math.random()*300)+150;
 			mines.get(i).setY(r);
-			mines.get(i).setX(300+i*300);
+			mines.get(i).setX(1250+i*300);
 		}
 		
 		
+		instruc = new Base(0,20,0,animI);
 		
-//		instruc = new Base(0,20,0, animI);
 //		gameo = new Base(0,20,0,animG);
 //		gamew = new Base(0,20,0,animG2);
 //		pausa = new Base(0,20,0,animP);
@@ -201,9 +200,6 @@ public class FlappySub extends JFrame implements Runnable, KeyListener {
 			if (push<0) {
 				push++;
 			}
-			if (y<0 || y>668) {
-//				sub.addLives(-1);
-			}
 			sub.addY(y);
 			sub.actualiza(tiempoActual);
 			
@@ -240,7 +236,14 @@ public class FlappySub extends JFrame implements Runnable, KeyListener {
 	 * con las orillas del <code>Applet</code>.
 	 */
 	public void checaColision() {
-//		Colision entre objetos
+		if (sub.getY()<0 || sub.getY()>668) {
+			sub.addLives(-1);
+			if (sound) {
+				choque.play();
+			}
+		}
+		
+		
 		for (int i=0; i<nMines; i++) {
 			if (mines.get(i).intersecta(sub)) {
 				sub.addLives(-1);
@@ -278,14 +281,13 @@ public class FlappySub extends JFrame implements Runnable, KeyListener {
 			push -= 10;
 		} else if (e.getKeyCode()== KeyEvent.VK_R) {
 			if (estado!=0) {
-				sub.setX(10);
+				sub.setX(563);
 				sub.setY(400);
 				sub.setLives(1);
 				int r = (int)(Math.random()*300)+150;
 				for (int i=0; i<nMines; i++) {
-					int x=1, y=10;
 					mines.get(i).setY(r);
-					mines.get(i).setX(300+i*300);
+					mines.get(i).setX(1250+i*300);
 				}
 				estado = 0;
 			}
@@ -371,10 +373,9 @@ public class FlappySub extends JFrame implements Runnable, KeyListener {
 				g.drawImage(m.getBottom().getImage(), m.getX(), m.getBottom().getY(), this);
 			}
 			
-//			if(estado == 0) {
+			if (estado == 0) {
 //			Dibuja el estado corriendo del juego
 				g.drawImage(sub.getImage(), sub.getX(), sub.getY(), this);
-				
 				
 //				g.drawString("Vidas: " + String.valueOf(hank.getLives()), 1000, 75);	// draw score at (1000,25)
 //			} else if (estado == 1) {
@@ -383,40 +384,15 @@ public class FlappySub extends JFrame implements Runnable, KeyListener {
 //				g.drawImage(pausa.getImage(),pausa.getX(),pausa.getY(),this);
 				
 //				g.drawString("PAUSA", getWidth()/2 - 100, getHeight()/2);
-                               if (estado == 2) {
+			} else if (estado == 2) {
 //				Dibuja el estado de informacion para el usuario en el jframe
-
 				g.drawImage(instruc.getImage(),instruc.getX(),instruc.getY(),this);
 			}
-				
-				/*g.drawString("INSTRUCCIONES", getWidth()/2 - 210, 200);
-				g.drawString("Para jugar debes mover a Hank con las", getWidth()/2 - 210, 250);
-				g.drawString("teclas ← y →. Presiona la barra espaciadora", getWidth()/2 - 210, 280);
-				g.drawString("para disparar, destruye todas anfetaminas y", getWidth()/2 - 210,310);
-				g.drawString("luego enfrenta a Walter cara a cara.", getWidth()/2 - 210, 340);
-				g.drawString("I - Instrucciones", getWidth()/2 - 210, 370);
-				g.drawString("S - Sonido", getWidth()/2 - 210, 400);
-				g.drawString("P - Pausa", getWidth()/2 - 210, 430);*/
-                        } 
-//                                else if (estado == 3) {
-//				Dibuja el estado de creditos en el jframe
-				
-//				g.drawImage(gameo.getImage(),gameo.getX(),gameo.getY(),this);
-				
-				/*g.setColor(new Color(78, 88, 93));
-				g.fillRect(100, 100, getWidth() - 200, getHeight() - 200);
-				g.setColor(Color.white);
-				g.drawString("GAME OVER", getWidth()/2 - 210, 200);
-				g.drawString("CREDITOS", getWidth()/2 - 210, 250);
-				g.drawString("Andres Rodriguez    A00812121", getWidth()/2 - 210, 300);
-				g.drawString("Alejandro Sanchez   A01191434", getWidth()/2 - 210, 350);
-				g.drawString("Manuel Sañudo       A01192241", getWidth()/2 - 210, 400);*/
-//			}
-                else {
+		} else {
 //			Da un mensaje mientras se carga el dibujo	
 			g.drawString("No se cargo la imagen..", 20, 20);
 		}
-        }       
+	}       
 		 
 	
 	/**

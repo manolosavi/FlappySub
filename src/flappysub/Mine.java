@@ -86,6 +86,15 @@ public class Mine {
 	}
 	
 	/**
+	 * Metodo modificador usado para cambiar la posicion en y del objeto 
+	 * @param g es el <code>espacio</code> entre objetos.
+	 */
+	public void setGap(int g) {
+		gap = g;
+		bottom.setY(posY+g);
+	}
+	
+	/**
 	 * Metodo de acceso que regresa la posicion en x del objeto 
 	 * @return posX es la <code>posicion en x</code> del objeto.
 	 */
