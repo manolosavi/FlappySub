@@ -383,10 +383,11 @@ public class FlappySub extends JFrame implements Runnable, KeyListener {
 //				g.drawImage(pausa.getImage(),pausa.getX(),pausa.getY(),this);
 				
 //				g.drawString("PAUSA", getWidth()/2 - 100, getHeight()/2);
-			} else if (estado == 2) {
+                               if (estado == 2) {
 //				Dibuja el estado de informacion para el usuario en el jframe
 
 				g.drawImage(instruc.getImage(),instruc.getX(),instruc.getY(),this);
+			}
 				
 				/*g.drawString("INSTRUCCIONES", getWidth()/2 - 210, 200);
 				g.drawString("Para jugar debes mover a Hank con las", getWidth()/2 - 210, 250);
