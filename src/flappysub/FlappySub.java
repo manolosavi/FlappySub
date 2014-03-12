@@ -396,6 +396,7 @@ public class FlappySub extends JFrame implements Runnable, KeyListener {
 			if (estado == 0) {
 //			Dibuja el estado corriendo del juego
 				g.drawImage(sub.getImage(), sub.getX(), sub.getY(), this);
+                                g.drawString("Score: " + score,1000, 75);	// draw score at (1000,25)
 				
 //				g.drawString("Vidas: " + String.valueOf(hank.getLives()), 1000, 75);	// draw score at (1000,25)
 //			} else if (estado == 1) {
