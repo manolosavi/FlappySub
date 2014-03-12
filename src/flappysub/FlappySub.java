@@ -215,9 +215,9 @@ public class FlappySub extends JFrame implements Runnable, KeyListener {
 					changeLvl = false;
 				} else if (mine.getX() < -34) {
 					mine.setX(1250);
-					int g = 128-level*8;
-					mine.setGap((g>=64)?g:64);
-					minesV = -3-level;
+					int g = 128-level*4;
+					mine.setGap((g>=80)?g:80);
+					minesV = -3-(level/2);
 					int r = (int)(Math.random()*300)+150;
 					mine.setY(r);
 				}
@@ -277,9 +277,9 @@ public class FlappySub extends JFrame implements Runnable, KeyListener {
 	 */
 	@Override
 	public void keyPressed(KeyEvent e) {
-		if (e.getKeyCode() == KeyEvent.VK_S) {			//Presiono tecla s para quitar sonido
+		if (e.getKeyChar() == 's') {			//Presiono tecla s para quitar sonido
 			sound = !sound;
-		} else if (e.getKeyCode() == KeyEvent.VK_I) {
+		} else if (e.getKeyChar() == 'i') {
 //			Mostrar/Quitar las instrucciones del juego
 			if (estado == 2) {
 				estado = 0;
@@ -287,24 +287,28 @@ public class FlappySub extends JFrame implements Runnable, KeyListener {
 				estado = 2;
 //				cargar=true;
 			}
-		} else if (e.getKeyCode() == KeyEvent.VK_P) {	//Presiono tecla P para parar el juego en ejecuccion
+		} else if (e.getKeyChar() == 'p') {	//Presiono tecla p para parar el juego en ejecuccion
 			if (estado == 1) {
 				estado = 0;
 			} else {
 				estado = 1;
 			}
-		} else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+		} else if (e.getKeyCode() == KeyEvent.VK_SPACE || e.getKeyCode() == KeyEvent.VK_UP) {
 			push -= 10;
+		} else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+			push += 10;
 		} else if (e.getKeyCode()== KeyEvent.VK_R) {
 			if (estado!=0) {
 				score = 0;
 				level = 0;
+				gravity = 4;
+				push = 0;
 				minesV = -3;
 				sub.setX(563);
 				sub.setY(400);
 				sub.setLives(1);
-				int r = (int)(Math.random()*300)+150;
 				for (int i=0; i<nMines; i++) {
+					int r = (int)(Math.random()*300)+150;
 					mines.get(i).setY(r);
 					mines.get(i).setX(1250+i*300);
 					mines.get(i).setGap(128);
