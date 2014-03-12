@@ -117,12 +117,12 @@ public class FlappySub extends JFrame implements Runnable, KeyListener {
 		minesV = -3;
 		minesGap = 98;
 		mines = new LinkedList();
-		int r = (int)(Math.random()*300)+150;
 		for (int i=0; i<nMines; i++) {
 			int x=1, y=10;
 			Base top = new Base(0,0,0,animT);
 			Base bottom = new Base(0,0,0,animB);
 			mines.add(new Mine(x, y, minesGap, top, bottom));
+			int r = (int)(Math.random()*300)+150;
 			mines.get(i).setY(r);
 			mines.get(i).setX(300+i*300);
 		}
@@ -271,20 +271,20 @@ public class FlappySub extends JFrame implements Runnable, KeyListener {
 			}
 		} else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
 			push -= 10;
-		} else if (e.getKeyCode()== KeyEvent.VK_R){
-                    sub.setX(10);
-                    sub.setY(400);
-                    if(sub.getLives()==0){
-                        sub.setLives(1);
-                    }
-                    int r = (int)(Math.random()*300)+150;
-                    for (int i=0; i<nMines; i++) {
-			int x=1, y=10;
-			mines.get(i).setY(r);
-			mines.get(i).setX(300+i*300);
-                    }
-                    estado =0;
-                }
+		} else if (e.getKeyCode()== KeyEvent.VK_R) {
+			if (estado!=0) {
+				sub.setX(10);
+				sub.setY(400);
+				sub.setLives(1);
+				int r = (int)(Math.random()*300)+150;
+				for (int i=0; i<nMines; i++) {
+					int x=1, y=10;
+					mines.get(i).setY(r);
+					mines.get(i).setX(300+i*300);
+				}
+				estado = 0;
+			}
+		}
                 
     }
 	@Override
