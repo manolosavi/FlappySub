@@ -81,7 +81,7 @@ public class Mine {
 	 */
 	public void setY(int y) {
 		posY = y;
-		top.setY(posY-top.getHeight());
+		top.setY(posY-700);
 		bottom.setY(posY+gap);
 	}
 	

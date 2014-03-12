@@ -118,6 +118,14 @@ public class Base {
 	}
 	
 	/**
+	 * Metodo modificador usado para aumentar vidas
+	 * @param y es el <code>aumento</code> en posY.
+	 */
+	 public void addY(int y){
+	 	posY += y;
+	}
+	
+	/**
 	 * Metodo modificador usado para cambiar la velocidad en x del objeto 
 	 * @param x es la <code>velocidad en x</code> del objeto.
 	 */
